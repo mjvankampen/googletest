@@ -10,14 +10,20 @@ endif (POLICY CMP0048)
 project(googletest-distribution)
 set(GOOGLETEST_VERSION 1.10.0)
 
+LIST(APPEND EXTENSION_DEFINES _POSIX_C_SOURCE=200809L)
+
+if(${CMAKE_SYSTEM_NAME} STREQUAL "QNX" )
+  LIST(APPEND EXTENSION_DEFINES _QNX_SOURCE)
+endif()
 
 if (CMAKE_VERSION VERSION_LESS "3.1")
-  add_definitions(-std=c++11 -D_POSIX_C_SOURCE=200809L)
+	LIST(TRANSFORM EXTENSION_DEFINES PREPEND -D )
+    add_definitions(-std=c++11 ${EXTENSION_DEFINES})
 else()
   set(CMAKE_CXX_STANDARD 11)
   set(CMAKE_CXX_STANDARD_REQUIRED ON)
   set(CMAKE_CXX_EXTENSIONS OFF)
-  add_compile_definitions(_POSIX_C_SOURCE=200809L)
+  add_compile_definitions(${EXTENSION_DEFINES})
 endif()
 
 enable_testing()
